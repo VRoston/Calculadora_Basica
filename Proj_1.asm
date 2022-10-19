@@ -3,10 +3,14 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
 .MODEL SMALL
 
 .DATA
-    MSG1 db  10, 13, 'Digite o 1o numero: ','$'  ;DEFININDO AS MENSAGENS    MSG2 db  10, 13, 'Digite o 2o numero: ','$'
+    MSG1 db  10, 13, 'Digite o 1o numero: ','$'  ;DEFININDO AS MENSAGENS    
+    MSG2 db  10, 13, 'Digite o 2o numero: ','$'
     MSG3 db  10, 13, 'RESULTADO: ','$'
+    MSG4 db  10, 13, 'QUAL OPERACAO:(1-SOMA)(2-SUBTRACAO)(3-MULTIPLICACAO)(4-DIVISAO)','$'
     PULA_LINHA db 10, 13, '$'
     
+    AUXILIAR DB ?
+
     NUM1 DB ?                                    ;DEFININDO ESPACO PARA ARMAZENAR OS NUMEROS
     NUM2 DB ?
     RESULTADO DB ?
@@ -35,6 +39,9 @@ MAIN PROC
     SUB AL,30H          ; PASSA O CARACTER PARA NUMERO
     MOV NUM2, AL        ; ARMAZENA O NUMERO EM "NUM2"
 
+    JMP ADICAO
+
+ADICAO:
     MOV DL, NUM1        
     ADD DL, NUM2        ; FAZ A SOMA DOS NUMERO E ARMAZENA EM "RESULTADO"
     MOV RESULTADO, DL
@@ -47,6 +54,21 @@ MAIN PROC
 
     MOV AH, 4CH         ; ENCERRA O PROGRAMA!
     INT 21H
+
+SUBTRACAO:
+    MOV DL, NUM1        
+    SUB DL, NUM2        ; FAZ A SUBTRACAO DOS NUMERO E ARMAZENA EM "RESULTADO"
+    MOV RESULTADO, DL
+
+    LEA DX, MSG3
+    MOV AH, 09H         ; PRINT O MSG3 NA TELA
+    INT 21H
+
+    CALL OUTPUT         ; CHAMA A FUNÇÃO "OUTPUT"
+
+    MOV AH, 4CH         ; ENCERRA O PROGRAMA!
+    INT 21H
+
 
 MAIN ENDP
 
