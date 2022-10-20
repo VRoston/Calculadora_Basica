@@ -96,7 +96,7 @@ PULA:
 
     CALL OUTPUT         ; CHAMA A FUNÇÃO "OUTPUT"
 
-    MOV AH, 4CH         ; ENCERRA O PROGRAMA!
+    MOV AH, 4CH         ; ENCERRA O PROGRAMA!   
     INT 21H
 MAIN ENDP
 
