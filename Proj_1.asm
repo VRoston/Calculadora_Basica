@@ -6,7 +6,12 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
     MSG1 db  10, 13, 'Digite o 1o numero: ','$'  ;DEFININDO AS MENSAGENS    
     MSG2 db  10, 13, 'Digite o 2o numero: ','$'
     MSG3 db  10, 13, 'RESULTADO: ','$'
-    MSG4 db  10, 13, 'QUAL OPERACAO:(1-SOMA)(2-SUBTRACAO)(3-MULTIPLICACAO)(4-DIVISAO)','$'
+    MSG4 db  10, 13, 'CONTAS ARITIMETICAS','$'
+    MSG5 db  10, 13, 'ESCOLHA A OPERACAO A SER REALIZADA','$'
+    MSG6 db  10, 13, '1-SOMA','$'
+    MSG7 db  10, 13, '2-SUBTRACAO','$'
+    MSG8 db  10, 13, '3-MULTIPLICACAO','$'
+    MSG9 db  10, 13, '4-DIVISAO','$'
     PULA_LINHA db 10, 13, '$'
     
     AUXILIAR DB ?
