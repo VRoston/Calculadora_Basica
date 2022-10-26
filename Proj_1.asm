@@ -158,7 +158,7 @@ COR_DE_FUNDO PROC
     RET
 COR_DE_FUNDO ENDP
 
-
+; definindo a primeira tela que apresenta o titulo da calculadora piscando
 PRIMEIRA_PAGINA PROC
     MOV AH,00
     MOV AL,00
