@@ -21,7 +21,7 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
     MSG16 db  10, 13, ' GOSTARIA DE CONTINUAR?','$'
     MSG17 db  10, 13, ' SIM - APERTE 1','$'
     MSG18 db  10, 13, ' NAO - APERTE QUALQUER TECLA','$'
-    MSG19 db  10, 13, 10, 13,  '          CALCULADORA BASICA','$'
+    MSG19 db  10, 13, 10, 13,  '         CALCULADORA BASICA','$'
 
     PULA_LINHA db 10, 13, '$'
     SINAL_NEGATIVO db '-', '$'
@@ -330,15 +330,16 @@ SUBTRACAO_RESULTADO_NEGATIVO PROC
     RET
 SUBTRACAO_RESULTADO_NEGATIVO ENDP
 
-; MULTIPLICACAO
+; multiplicacao
 CALCULAR_MULTIPLICACAO PROC
-    XOR DX, DX          ; ZERA BX PARA ARMAZENAR RESULTADOS
-    MOV CX, 4           ; O LOOP SERA FEITO 4 VEZES POIS O INPUT PODE RECEBER ATE 9 (1001 EM BINARIO)
+    XOR DX, DX          ; inicializa dx com 0
+    MOV CX, 4           ; inicializa cx com 4 para reptir o loop 4 vezes
 
-    MOV BL,NUM1         ; NUMERO QUE SERA ADICIONADO NO RESULTADO E ROTACIONADO A ESQUERDA A CADA REPETICAO
-    MOV BH,NUM2         ; NUMERO QUE VAI SER A QUANTIDADE DE VEZES QUE O NUM1 VAI SER ADICIONADO, 
-                        ;  SENDO ESSE NUM2 BINARIO QUE MANDARA UM VALOR PARA A CF, E CASO 0 PULA 
-                        ;  A SOMA DO NUM1 NO RESULTADO E CASO 1 ADICIONA O NUM1 AO RESULTADO
+    MOV BL,NUM1         ; numero que sera adicionado no resultado e rotacionado a esquerda a cada repeticao
+    MOV BH,NUM2         ; numero que vai ser a quantidade de vezes que o num1 vai ser adicionado, 
+                        ;  sendo esse num2 binario que mandara um valor para a cf, e caso 0 pula 
+                        ;  a soma do num1 no resultado e caso 1 adiciona o num1 ao resultado
+
   VOLTA:
     SHR BH,1            ; MOVIMENTA NUM2 P/ CF (CASO 1 ADICIONA BL AO RESULTADO E DESLOCA O NUM1 
     JNC PULA            ;  PARA ESQUERDA PARA A PROXIMA SOMA, CASO 0 APENAS DESLOCA NUM1 PARA ESQUERDA)
@@ -350,19 +351,25 @@ CALCULAR_MULTIPLICACAO PROC
 
     MOV RESULTADO,DL    ; PASSA O VALOR FINA DA MULTIPLICACAO PARA A VARIAVEL RESULTADO
 
-    LEA DX, MSG3        ; PRINT O MSG3 NA TELA
+    LEA DX, MSG3        ; print msg3 na tela
     CALL IMPRIMIR_MSG
 
     RET
 CALCULAR_MULTIPLICACAO ENDP
 
-; FIM DE PROGRAMA
+; fim de programa
 ENCERRA_PROGRAMA PROC
-    LEA DX, PULA_LINHA
+    LEA DX, PULA_LINHA  ; pula uma linha
     CALL IMPRIMIR_MSG
 
     LEA DX, MSG15
     CALL IMPRIMIR_MSG
+
+    MOV CX,11           ; inicializa cx com 11
+VOLTA1:
+    LEA DX, PULA_LINHA
+    CALL IMPRIMIR_MSG   ; realiza um loop para imprimir linha 10 vezes
+    LOOP VOLTA1
 
     MOV AH, 4CH         ; ENCERRA O PROGRAMA!
     INT 21H
