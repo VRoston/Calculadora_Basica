@@ -22,7 +22,7 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
     MSG17 db  10, 13, ' SIM - APERTE 1','$'
     MSG18 db  10, 13, ' NAO - APERTE QUALQUER TECLA','$'
     PULA_LINHA db 10, 13, '$'
-    SINAL_NEGATIVO db 10, 13, '-', '$'
+    SINAL_NEGATIVO db '-', '$'
     
     AUXILIAR DB ?
 
