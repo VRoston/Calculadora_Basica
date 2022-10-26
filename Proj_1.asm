@@ -90,22 +90,25 @@ REINICIA_PROGRAMA2:
 
 
 SUBTRACAO:
-    CALL COR_DE_FUNDO
+    CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
 
-    CALL INPUT
+    CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
-    CALL TESTE_POSITIVO_NEGATIVO
-        JL RESULTADO_NEGATIVO
+    CALL TESTE_POSITIVO_NEGATIVO        ; chama a funcao que testa se a resposta sera positivo ou negativo
+        JL RESULTADO_NEGATIVO           ; caso resposta negativo, pula para o caso especial de resposta negativo
 
-    CALL SUBTRACAO_RESULTADO_POSITIVO
+    CALL SUBTRACAO_RESULTADO_POSITIVO   ; chama a funcao para calcular a subtracao com resposta positivo
 
-    JMP TERMINA_OPERACAO
+    JMP TERMINA_OPERACAO                ; chama a funcao para exibir a resposta na tela e perguntar se quer fazer 
+                                        ;  outra conta ou encerrar o programa
 
 RESULTADO_NEGATIVO:
 
-    CALL SUBTRACAO_RESULTADO_NEGATIVO
+    CALL SUBTRACAO_RESULTADO_NEGATIVO   ; chama a funcao que fara a subtracao com o maior numero primeiro, e 
+                                        ;  imprimira um resultado de negativo antes da resposta
 
-    JMP TERMINA_OPERACAO
+    JMP TERMINA_OPERACAO                ; chama a funcao para exibir a resposta na tela e perguntar se quer fazer 
+                                        ;  outra conta ou encerrar o programa
 
 
 MULTIPLICACAO:
@@ -280,7 +283,7 @@ OUTPUT PROC
     RET                 ; RETORNA DA FUNÇÃO
 OUTPUT ENDP
 
-; SOMA
+; soma
 CALCULAR_SOMA PROC
     MOV DL, NUM1        
     ADD DL, NUM2        ; FAZ A SOMA DOS NUMERO E ARMAZENA EM "RESULTADO"
@@ -292,7 +295,7 @@ CALCULAR_SOMA PROC
     RET
 CALCULAR_SOMA ENDP
 
-; SUBTRACAO
+; subtracao
 TESTE_POSITIVO_NEGATIVO PROC
     MOV AL, NUM1        ;NO CASO DA SUBTRACAO, CASO SEGUNDO VALOR MAIOR QUE O PRIMEIRO, RESULTADO SERA NEGATIVO
     MOV BL, NUM2        ; PARA ISSO COMPARAMOS NUM1 E NUM2, CASO POSITIVO IGNORA O PULO PARA "RESULTADO_NEGATIVO"
