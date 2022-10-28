@@ -3,21 +3,21 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
 .MODEL SMALL
 
 .DATA
-    MSG1 db  10, 13, 'Digite o 1o numero: ','$'         ;DEFININDO AS MENSAGENS    
-    MSG2 db  10, 13, 'Digite o 2o numero: ','$'
-    MSG3 db  10, 13, ' RESULTADO: ','$'
-    MSG4 db  10, 13, 'CONTAS ARITIMETICAS','$'
+    MSG1 db  10, 13,  'Digite o 1o numero: ','$'         ;DEFININDO AS MENSAGENS    
+    MSG2 db  10, 13,  'Digite o 2o numero: ','$'
+    MSG3 db  10, 13,  ' RESULTADO: ','$'
+    MSG4 db  10, 13,  'CONTAS ARITIMETICAS','$'
     MSG5 db  10, 13,  ' ESCOLHA A OPERACAO A SER REALIZADA:','$'
-    MSG6 db  10, 13, '  1-SOMA','$'
-    MSG7 db  10, 13, '  2-SUBTRACAO','$'
-    MSG8 db  10, 13, '  3-MULTIPLICACAO','$'
-    MSG9 db  10, 13, '  4-DIVISAO','$'
-    MSG10 db  10, 13, '   >','$'
-    MSG11 db  10, 13, ' CARACTER INVALIDO, TENTE DENOVO:','$'
+    MSG6 db  10, 13,  '  1-SOMA','$'
+    MSG7 db  10, 13,  '  2-SUBTRACAO','$'
+    MSG8 db  10, 13,  '  3-MULTIPLICACAO','$'
+    MSG9 db  10, 13,  '  4-DIVISAO','$'
+    MSG10 db  10, 13, '   >>>','$'
+    MSG11 db  10, 13, ' CARACTER INVALIDO, TENTE NOVAMENTE:','$'
     msg12 db  10, 13, ' [APERTE QUALQUER TECLA]','$'
     MSG13 db  10, 13, ' [DIGITE DE 1 A 4 PARA ESCOLHER, OU 9 PARA FECHAR]','$'
     MSG14 db  10, 13, '  9-FINALIZAR PROGRAMA','$'
-    MSG15 db  10, 13, '  ///O PROGRAMA FOI ENCERRADO, OBRIGADO POR USAR\\\','$'
+    MSG15 db          '  ///O PROGRAMA FOI ENCERRADO, OBRIGADO POR USAR\\\','$'
     MSG16 db  10, 13, ' GOSTARIA DE CONTINUAR?','$'
     MSG17 db  10, 13, ' SIM - APERTE 1','$'
     MSG18 db  10, 13, ' NAO - APERTE QUALQUER TECLA','$'
@@ -25,6 +25,7 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
     MSG20 db  10, 13, ' QUOCIENTE: ','$'
     MSG21 db  10, 13, ' RESTO: ','$'
     MSG22 db  10, 13, ' IMPOSSIVEL DIVIDIR POR 0','$'
+    MSG23 db  10, 13, '   ===PROGRAMA FEITO POR VICTOR DE MELO ROSTON===','$'
 
     PULA_LINHA db 10, 13, '$'
     SINAL_NEGATIVO db '-', '$'
@@ -472,10 +473,18 @@ CALCULAR_DIVISAO ENDP
 
 ; fim de programa
 ENCERRA_PROGRAMA PROC
+    CALL COR_DE_FUNDO
+
     LEA DX, PULA_LINHA  ; pula uma linha
     CALL IMPRIMIR_MSG
 
     LEA DX, MSG15
+    CALL IMPRIMIR_MSG
+
+    LEA DX, PULA_LINHA
+    CALL IMPRIMIR_MSG
+
+    LEA DX, MSG23
     CALL IMPRIMIR_MSG
 
     MOV CX,11           ; inicializa cx com 11
@@ -483,6 +492,7 @@ VOLTA1:
     LEA DX, PULA_LINHA
     CALL IMPRIMIR_MSG   ; realiza um loop para imprimir linha 10 vezes
     LOOP VOLTA1
+
 
     MOV AH, 4CH         ; ENCERRA O PROGRAMA!
     INT 21H
