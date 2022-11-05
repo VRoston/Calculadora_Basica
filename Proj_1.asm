@@ -3,7 +3,8 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
 .MODEL SMALL
 
 .DATA
-    MSG1 db  10, 13,  'Digite o 1o numero: ','$'         ;DEFININDO AS MENSAGENS    
+; definindo as menssagens que vao aparecer no programa
+    MSG1 db  10, 13,  'Digite o 1o numero: ','$'
     MSG2 db  10, 13,  'Digite o 2o numero: ','$'
     MSG3 db  10, 13,  ' RESULTADO: ','$'
     MSG4 db  10, 13,  'CONTAS ARITIMETICAS','$'
@@ -26,21 +27,19 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
     MSG21 db  10, 13, ' RESTO: ','$'
     MSG22 db  10, 13, ' IMPOSSIVEL DIVIDIR POR 0','$'
     MSG23 db  10, 13, '   ===PROGRAMA FEITO POR VICTOR DE MELO ROSTON===','$'
-
     PULA_LINHA db 10, 13, '$'
     SINAL_NEGATIVO db '-', '$'
     
-    AUXILIAR DB ?
-
-    NUM1 DB ?                                    ;DEFININDO ESPACO PARA ARMAZENAR OS NUMEROS
+; definindo as variaveis que vao auxiliar no programa
+    NUM1 DB ?
     NUM2 DB ?
-    RESULTADO DB ?
-    RESULTADO2 DB ?
+    RESULTADO DB ?              ; existem dois resultados devido a necessidade da divisao de usar um
+    RESULTADO2 DB ?             ;  para quociente e outro para o resto
 
 .CODE
 MAIN PROC
     MOV AX,@DATA        
-    MOV DS,AX                   ;ININICIALIZA O DATA
+    MOV DS,AX                   ; inicializa o data
     MOV ES,AX
 
     CALL PRIMEIRA_PAGINA        ; faz a chamada da tela inicial do programa que apenas exibira o
@@ -51,51 +50,58 @@ REINICIA_PROGRAMA:
 
     CALL SUMARIO                ; imprime as opcoes de operacoes possiveis no programa
 
+; inicio da escolha de operacao
 CARACTER_INVALIDO:
-    MOV AH,01H                  ; ENTRADA DE 1 A 4 PARA ESCOLHER QUAL OPERACAO FAZER
-    SUB AL,30H
+    MOV AH,01H                      ; entrada de caractere 1 a 4 para escolher qual operacao realizar
+    SUB AL,30H                      ; transforma o caractere da entrada da tabela ASCII para numero
     INT 21H
 
-    CMP AL, '1'                 ; CASO ENTRADA SEJA 1, COMPARA AL COM 1, SE IGUAL PULA PARA ADICAO
+    CMP AL, '1'                     ; caso entrada seja 1, compara AL com 1, caso igual pula para adicao
     JE ADICAO
 
-    CMP AL, '2'                 ; CASO ENTRADA SEJA 2, COMPARA AL COM 2, SE IGUAL PULA PARA SUBTRACAO
+    CMP AL, '2'                     ; CASO ENTRADA SEJA 2, COMPARA AL COM 2, SE IGUAL PULA PARA SUBTRACAO
     JE SUBTRACAO
 
-    CMP AL, '3'                 ; CASO ENTRADA SEJA 3, COMPARA AL COM 3, SE IGUAL PULA PARA MULTIPLICACAO
+    CMP AL, '3'                     ; CASO ENTRADA SEJA 3, COMPARA AL COM 3, SE IGUAL PULA PARA MULTIPLICACAO
     JE MULTIPLICACAO
 
-    CMP AL, '4'                 ; CASO ENTRADA SEJA 4, COMPARA AL COM 4, SE IGUAL PULA PARA DIVISAO
+    CMP AL, '4'                     ; CASO ENTRADA SEJA 4, COMPARA AL COM 4, SE IGUAL PULA PARA DIVISAO
     JE DIVISAO
 
-    CMP AL, '9'                 ; CASO ENTRADA SEJA 9, COMPARA AL COM 9, SE IGUAL TERMINA O PROGRAMA
+    CMP AL, '9'                     ; CASO ENTRADA SEJA 9, COMPARA AL COM 9, SE IGUAL TERMINA O PROGRAMA
     JE FIM
 
-    LEA DX, PULA_LINHA          ; PULA LINHA
+    LEA DX, PULA_LINHA              ; vai para a proxima linha
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG11               ; IMPRIME MSG11
+    LEA DX, MSG11                   ; imprime MSG11
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG10               ; IMPRIME MSG10
+    LEA DX, MSG10                   ; imprime MSG10
     CALL IMPRIMIR_MSG
 
-    JMP CARACTER_INVALIDO
+    JMP CARACTER_INVALIDO           ; caso chegue nessa parte ele volta pois o caractere inserido nao é valido
 
-    REINICIA_PROGRAMA2:
-        JMP REINICIA_PROGRAMA
+    REINICIA_PROGRAMA2:             ; devido a uma resticao de tamanho, o umtimo jmp nao alcanca o REINICIA_PROGRAMA, 
+        JMP REINICIA_PROGRAMA       ;  entao foi feito uma ponte para reiniciar o programa
+; fim da escolha de operacao
+
 
 ; inicio das operacoes
+
+; inicio da soma
 ADICAO:
-    CALL COR_DE_FUNDO
+    CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
 
-    CALL INPUT
+    CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
-    CALL CALCULAR_SOMA
+    CALL CALCULAR_SOMA                  ; chama a funcao que vai fazer a soma em binarios
 
-    JMP TERMINA_OPERACAO
+    JMP TERMINA_OPERACAO                ; chama a funcao para exibir a resposta na tela e perguntar se quer fazer 
+                                        ;  outra conta ou encerrar o programa
+; fim da soma
 
-
+; inicio da subtracao
 SUBTRACAO:
     CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
 
@@ -115,50 +121,60 @@ SUBTRACAO:
 
     JMP TERMINA_OPERACAO                ; chama a funcao para exibir a resposta na tela e perguntar se quer fazer 
                                         ;  outra conta ou encerrar o programa
+; fim da subtracao
 
-
+; inicio da multiplicacao
 MULTIPLICACAO:
-    CALL COR_DE_FUNDO
+    CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
 
-    CALL INPUT
+    CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
-    CALL CALCULAR_MULTIPLICACAO
+    CALL CALCULAR_MULTIPLICACAO         ; chama a funcao que ira calcular a multiplicacao em binario usando rotacao e soma
     
-    JMP TERMINA_OPERACAO
+    JMP TERMINA_OPERACAO                ; chama a funcao para exibir a resposta na tela e perguntar se quer fazer 
+                                        ;  outra conta ou encerrar o programa
+; fim da multiplicacao
 
+; inicio da divisao
 DIVISAO:
-    CALL COR_DE_FUNDO
+    CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
 
-    CALL INPUT
+    CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
     CALL DIVISAO_COM_ZERO               ; realiza a verificacao de uma possivel entrada de 0 no segndo numero
         JE PULA4                        ; com a comparacao feita, pula caso algum numero da entrada seja 0
 
-    CALL CALCULAR_DIVISAO
+    CALL CALCULAR_DIVISAO               ; chama a funcao que vai fazer a divisao usando rotacao e subtracao
 
-    CALL OUTPUT_QUOCIENTE
+    CALL OUTPUT_QUOCIENTE               ; chama a funcao que vai imprimir o resultado do quociente na tela
 
-    CALL OUTPUT_RESTO
+    CALL OUTPUT_RESTO                   ; chama a funcao que vai imprimir o resultado do resto na tela
 
-
-    CALL QUER_CONTINUAR
-        JE REINICIA_PROGRAMA2
+    CALL QUER_CONTINUAR                 ; caso queria realizar outra conta o programa pula para o inicio,
+        JE REINICIA_PROGRAMA            ;  caso nao, o programa pula para o fim
     
     JMP FIM
 
-PULA4:
+ PULA4:
     LEA DX, MSG22                       ; imprime a menssagem de impossibilidade de dividir por 0
     CALL IMPRIMIR_MSG
-    JMP PULA7
 
+    JMP PULA7                           ; ja foi feito a impressao do resultado, entao pula para perguntar se continua o programa
+; fim da divisao
+
+; fim das operacoes
+
+
+; inicio do termino do programa
 TERMINA_OPERACAO:
-    CALL OUTPUT
-PULA7:
-    CALL QUER_CONTINUAR
-        JE REINICIA_PROGRAMA2
+    CALL OUTPUT                         ; chama a funcao para imprimir o resultado em 2 numeros de 2 bits
+ PULA7:
+    CALL QUER_CONTINUAR                 ; caso queria realizar outra conta o programa pula para o inicio, 
+        JE REINICIA_PROGRAMA2           ;  caso nao, o programa pula para o fim
 
-FIM:
-    CALL ENCERRA_PROGRAMA
+ FIM:
+    CALL ENCERRA_PROGRAMA               ; limpa a tela, muda a cor de fundo, imprime a menssagem de despedida e fecha o programa
+; fim do termino do programa
 
 MAIN ENDP
 
@@ -380,7 +396,6 @@ TESTE_POSITIVO_NEGATIVO PROC
     MOV BL, NUM2        ; PARA ISSO COMPARAMOS NUM1 E NUM2, CASO POSITIVO IGNORA O PULO PARA "RESULTADO_NEGATIVO"
     CMP AL, BL          ; E RESOLVE A CONTA NUM1-NUM2, CASO CONTRARIO, PULA PARA "RESULTADO_NEGATIVO" E FAZ NUM2-NUM1
                         ; E ADICIONA O SINAL DE NEGATIVO ANTES DA RESPOSTA FINAL
-
     RET
 TESTE_POSITIVO_NEGATIVO ENDP
 
