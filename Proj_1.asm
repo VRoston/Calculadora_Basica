@@ -514,19 +514,20 @@ VOLTA1:
     RET
 ENCERRA_PROGRAMA ENDP
 
-; AUTOMATIZACAO DO PROCESSO DE IMPRIMIR
+; automatizacao do processo para imprimir as menssagens
 IMPRIMIR_MSG PROC
-    MOV AH,09H
-    INT 21H
-    RET
+    MOV AH,09H      ; codigo para entrada de caractere pelo teclado
+    INT 21H         ; realiza a entrada do caractere pelo teclado e armazena no registrador AL
+
+    RET             ; retorna a funcão com a entrada de caractere em AL, e o AH ocupado com conteudo desnecessario
 IMPRIMIR_MSG ENDP
 
-; REINICIA O PROGRAMA APOS UMA CONTA CASO USUARIO DESEJE
+; apos uma conta o usuario decide se reinicia o programa ou o encerra
 QUER_CONTINUAR PROC
-    LEA DX, PULA_LINHA
+    LEA DX, PULA_LINHA      ; passa para a linha de baixo
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG16
+    LEA DX, MSG16           ; imprime as menssagens(MSG's)
     CALL IMPRIMIR_MSG
 
     LEA DX, MSG17
@@ -538,12 +539,12 @@ QUER_CONTINUAR PROC
     LEA DX, MSG10
     CALL IMPRIMIR_MSG
 
-    MOV AH, 01
+    MOV AH, 01              ; entrada de caractere pelo teclado
     INT 21H
-    SUB AL, 30H
-    MOV BH, 1
 
-    CMP AL, BH
+    SUB AL, 30H             ; transforma o caractere ASCII da entrada em numero
+    MOV BH, 1               ; compara com um, caso seja reinicia o programa, caso 
+    CMP AL, BH              ;  seja qualquer outro caractere reinicia o programa
 
     RET
 QUER_CONTINUAR ENDP
