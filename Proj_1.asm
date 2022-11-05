@@ -43,14 +43,15 @@ MAIN PROC
     MOV DS,AX                   ;ININICIALIZA O DATA
     MOV ES,AX
 
-    CALL PRIMEIRA_PAGINA
+    CALL PRIMEIRA_PAGINA        ; faz a chamada da tela inicial do programa que apenas exibira o
+                                ;  titulo do programa piscando, conteudo que aparecera apenas ao inicializar o programa
 
 REINICIA_PROGRAMA:
-    CALL COR_DE_FUNDO           ; COR DE FUNDO
+    CALL COR_DE_FUNDO           ; apaga tudo da tela e muda a cor de fundo
 
-    CALL SUMARIO
+    CALL SUMARIO                ; imprime as opcoes de operacoes possiveis no programa
 
- CARACTER_INVALIDO:
+CARACTER_INVALIDO:
     MOV AH,01H                  ; ENTRADA DE 1 A 4 PARA ESCOLHER QUAL OPERACAO FAZER
     SUB AL,30H
     INT 21H
@@ -84,7 +85,8 @@ REINICIA_PROGRAMA:
     REINICIA_PROGRAMA2:
         JMP REINICIA_PROGRAMA
 
- ADICAO:
+; inicio das operacoes
+ADICAO:
     CALL COR_DE_FUNDO
 
     CALL INPUT
@@ -92,6 +94,7 @@ REINICIA_PROGRAMA:
     CALL CALCULAR_SOMA
 
     JMP TERMINA_OPERACAO
+
 
 SUBTRACAO:
     CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
@@ -105,8 +108,7 @@ SUBTRACAO:
 
     JMP TERMINA_OPERACAO                ; chama a funcao para exibir a resposta na tela e perguntar se quer fazer 
                                         ;  outra conta ou encerrar o programa
-
-RESULTADO_NEGATIVO:
+ RESULTADO_NEGATIVO:
 
     CALL SUBTRACAO_RESULTADO_NEGATIVO   ; chama a funcao que fara a subtracao com o maior numero primeiro, e 
                                         ;  imprimira um resultado de negativo antes da resposta
@@ -129,8 +131,8 @@ DIVISAO:
 
     CALL INPUT
 
-    CALL DIVISAO_COM_ZERO
-        JE PULA4
+    CALL DIVISAO_COM_ZERO               ; realiza a verificacao de uma possivel entrada de 0 no segndo numero
+        JE PULA4                        ; com a comparacao feita, pula caso algum numero da entrada seja 0
 
     CALL CALCULAR_DIVISAO
 
@@ -145,7 +147,7 @@ DIVISAO:
     JMP FIM
 
 PULA4:
-    LEA DX, MSG22
+    LEA DX, MSG22                       ; imprime a menssagem de impossibilidade de dividir por 0
     CALL IMPRIMIR_MSG
     JMP PULA7
 
@@ -160,7 +162,7 @@ FIM:
 
 MAIN ENDP
 
-; MUDA A COR DO FUNDO DA TELA E TAMBEM APAGA O CONTEUDO PREVIO IMPRESSO NA TELA
+; apaga o conteudo impresso na tela e muda a cor de fundo
 COR_DE_FUNDO PROC
     MOV AH,00
     MOV AL,03h
@@ -195,12 +197,12 @@ PRIMEIRA_PAGINA PROC
     XOR CX, CX
     MOV CX, 16
     PL:
-    LEA DX, PULA_LINHA
+    LEA DX, PULA_LINHA          ; imprime pular linha 15 vezes definido em CX para imprimir MSG12
     CALL IMPRIMIR_MSG
     LOOP PL
 
-    LEA DX, MSG12
-    CALL IMPRIMIR_MSG
+    LEA DX, MSG12               ; faz a entrada de um caractere apenas para sair da tela inicial
+    CALL IMPRIMIR_MSG           ;  caractere nao ficara salvo e nao tera nenhuma utilidade apos
 
     MOV AH, 01H
     INT 21H
@@ -208,78 +210,77 @@ PRIMEIRA_PAGINA PROC
     RET
 PRIMEIRA_PAGINA ENDP
 
-; IMPRIME UM SUMARIO DAS OPERACOES QUE PODEM SER SELECIONADAS
+; imprime na tela um sumario das operacoes que podem ser selecionadas
 SUMARIO PROC
-    ;SELECIONA A OPERACAO
-    LEA DX, MSG5        ; IMPRIME MSG5
+    LEA DX, MSG5        ; a cada bloco sera feita a impressao de uma das menssagens escritas no .DATA
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG6        ; IMPRIME MSG6
+    LEA DX, MSG6        
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG7        ; IMPRIME MSG7
+    LEA DX, MSG7        
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG8        ; IMPRIME MSG8
+    LEA DX, MSG8        
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG9        ; IMPRIME MSG9
+    LEA DX, MSG9        
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG14       ; IMPRIME MSG14
+    LEA DX, MSG14       
     CALL IMPRIMIR_MSG
 
-    LEA DX, PULA_LINHA  ; PULA LINHA
+    LEA DX, PULA_LINHA  
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG13       ; IMPRIME MSG 13
+    LEA DX, MSG13       
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG10       ; IMPRIME MSG10
+    LEA DX, MSG10       
     CALL IMPRIMIR_MSG
 
     RET
 SUMARIO ENDP
 
-; ENTRADA DE CARACTERE PELO TECLADO
+; entrada dos numeros para a operacao
 INPUT PROC
  NUMERO_INVALIDO:
-    LEA DX, MSG1        ; PRINT O MSG1 NA TELA
+    LEA DX, MSG1        ; imprime MSG1 na tela
     CALL IMPRIMIR_MSG
 
     MOV AH,01H
-    INT 21H             ; FAZ A ENTRADA DO PRIMEIRO NÚMERO
+    INT 21H             ; faz a entrada do primeiro número da operação
     
-    CMP AL, 57          ; CASO ENTRADA MAIOR QUE 9 DA TABELA ASCII, REPETE A ENTRADA
-    JG NUMERO_INVALIDO
-
-    CMP AL, 48          ; CASO ENTRADA MENOR QUE 0 DA TABELA ASCII, REPETE A ENTRADA
+    CMP AL, 57          ; como a entrada pode ser qualquer caractere e o programa trabalha
+    JG NUMERO_INVALIDO  ;  com entrada de apenas um digito de numero (0 a 9), esse breve sistema 
+                        ;  limitara a entrada de caracteres entre 48 (0 na tabela ASCII) a 57 (9 na tabela ASCII),
+    CMP AL, 48          ;  fazendo um loop quando a entrada nao for entre 0 a 9
     JL NUMERO_INVALIDO
     
-    SUB AL,30H          ; PASSA O CARACTER PARA NUMERO
-    MOV NUM1, AL        ; ARMAZENA O NUMERO EM "NUM1"
+    SUB AL,30H          ; passa o caractere para numero
+    MOV NUM1, AL        ; armazena o primeiro numero na variavel NUM1
 
-
+; mesmos procedimentos, mas para a entrada do segundo numero para a operacao
  NUMERO_INVALIDO2:
-    LEA DX, MSG2        ; PRINT O MSG2 NA TELA
+    LEA DX, MSG2
     CALL IMPRIMIR_MSG
 
     MOV AH,01H
-    INT 21H             ; FAZ A ENTRADA DO SEGUNDO NÚMERO
+    INT 21H
 
-    CMP AL, 57          ; CASO ENTRADA MAIOR QUE 9 DA TABELA ASCII, REPETE A ENTRADA
+    CMP AL, 57
     JG NUMERO_INVALIDO2
 
-    CMP AL, 48          ; CASO ENTRADA MENOR QUE 0 DA TABELA ASCII, REPETE A ENTRADA
+    CMP AL, 48
     JL NUMERO_INVALIDO2
 
-    SUB AL,30H          ; PASSA O CARACTER PARA NUMERO
-    MOV NUM2, AL        ; ARMAZENA O NUMERO EM "NUM2"
+    SUB AL,30H
+    MOV NUM2, AL
 
-    RET
+    RET                 ; o retorno a funcao se dara com a entrada dos dois numeros armazenados em NUM1 e NUM2
 INPUT ENDP
 
-; CONVERSAO DO RESULTADO EM 2 NUMEROS DE 2 BITS PARA IMPRIMIR NA TELA
+; conversao do resultado em 2 numeros de 2 bits e imprime na tela
 OUTPUT PROC
     XOR AX, AX          ; ZERA O CONTEÚDO DE AX
     MOV AL, RESULTADO   ; PASSA O RESULTADO PRA AL
@@ -301,8 +302,9 @@ OUTPUT PROC
     RET                 ; RETORNA DA FUNÇÃO
 OUTPUT ENDP
 
-;imprime o quociente da divisao
+; imprime o quociente da divisao
 OUTPUT_QUOCIENTE PROC
+    ; realiza a mesma funcao do primeiro output, porem com a menssagem de quociente antes de exibir a resposta
     LEA DX, MSG20
     CALL IMPRIMIR_MSG
 
@@ -326,8 +328,9 @@ OUTPUT_QUOCIENTE PROC
     RET                 ; RETORNA DA FUNÇÃO
 OUTPUT_QUOCIENTE ENDP
 
-;imprimir o resto da divisao
+; imprimir o resto da divisao
 OUTPUT_RESTO PROC
+    ; realiza a mesma funcao do primeiro output, porem com a menssagem de resto antes de exibir a resposta
     LEA DX, MSG21
     CALL IMPRIMIR_MSG
 
@@ -351,16 +354,12 @@ OUTPUT_RESTO PROC
     RET
 OUTPUT_RESTO ENDP
 
-;caso um numero seja 0, impossivel realizar divisao por zero
+; caso o segundo numero da entrada seja 0, impossivel realizar divisao por zero
 DIVISAO_COM_ZERO PROC
-    MOV AL, NUM1
-    MOV AH, NUM2
-    CMP AL, 0
-    JE PULA3
-    CMP AH, 0
-PULA3:
+    MOV AH, NUM2            ; conteudo de NUM2 sera passado para o registrador
+    CMP AH, 0               ;  para fazer comparacao com zero
 
-    RET
+    RET                     ; a função retornara com a comparação do segundo numero da entrada
 DIVISAO_COM_ZERO ENDP
 
 ; soma
@@ -442,16 +441,17 @@ CALCULAR_MULTIPLICACAO ENDP
 
 ; divisao
 CALCULAR_DIVISAO PROC
-    XOR AX, AX          ; ZERA AX
+    XOR AX, AX          ; zera os registradores
     XOR BX, BX
     XOR CX, CX
     XOR DX, DX
 
-    MOV AH, NUM2
-    MOV CL, 4
+    MOV AH, NUM2        ; passa para o registrador o conteudo da variavel num2
+    MOV CL, 4           ; havera um loop de 4 vezes que usa cx como contador pois
+                        ;  a divisao tera no maximo 4 digitos de bits
 
 VOLTA3:
-    MOV AL, NUM1
+    MOV AL, NUM1        ; o registrador AL recebe num1 como base para fazer para subtrair
     SHR AL, CL
     RCL DL, 1
     CMP AH, DL
