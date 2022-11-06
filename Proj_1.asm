@@ -180,34 +180,38 @@ MAIN ENDP
 
 ; apaga o conteudo impresso na tela e muda a cor de fundo
 COR_DE_FUNDO PROC
-    MOV AH,00
-    MOV AL,03h
-    INT 10H
+ ; limpa a tela
+    MOV AH,00       ; tipo de video
+    MOV AL,03h      ; tipo de texto 80x25
+    INT 10H         ; executa a entrada de video
 
-    MOV AH,09
-    MOV AL,20H
-    MOV BH,00
-    MOV BL,6FH
-    MOV CX,800H
-    INT 10H
+ ; formata o modo de video
+    MOV AH,09       ; escrever um caractere e atributo para a posicao do cursos
+    MOV AL,20H      ; o caractere a mostrar
+    MOV BH,00       ; numero da pagina
+    MOV BL,6FH      ; atribuicao de cor
+    MOV CX,800H     ; numero de vezes a escrever o caractere
+    INT 10H         ; executa a entrada de video
 
     RET
 COR_DE_FUNDO ENDP
 
 ; definindo a primeira tela que apresenta o titulo da calculadora piscando
 PRIMEIRA_PAGINA PROC
-    MOV AH,00
-    MOV AL,00
-    INT 10H
+ ; limpa a tela
+    MOV AH,00                   ; tipo de video
+    MOV AL,00                   ; tipo de texto 40x25
+    INT 10H                     ; executa a entrada de video
 
-    MOV AH,09
-    MOV AL,20H
-    MOV BH,00
-    MOV BL,9FH
-    MOV CX,800H
-    INT 10H
+ ; formata o modo de video
+    MOV AH,09                   ; escrever um caractere e atributo para a posicao do cursos
+    MOV AL,20H                  ; o caractere a mostrar
+    MOV BH,00                   ; numero da pagina
+    MOV BL,9FH                  ; atribuicao de cor
+    MOV CX,800H                 ; numero de vezes a escrever o caractere
+    INT 10H                     ; executa a entrada de video
 
-    LEA DX, MSG19
+    LEA DX, MSG19               ; imprime MGS's na tela
     CALL IMPRIMIR_MSG
 
     XOR CX, CX
@@ -217,11 +221,11 @@ PRIMEIRA_PAGINA PROC
     CALL IMPRIMIR_MSG
     LOOP PL
 
-    LEA DX, MSG12               ; faz a entrada de um caractere apenas para sair da tela inicial
-    CALL IMPRIMIR_MSG           ;  caractere nao ficara salvo e nao tera nenhuma utilidade apos
+    LEA DX, MSG12               
+    CALL IMPRIMIR_MSG           
 
-    MOV AH, 01H
-    INT 21H
+    MOV AH, 01H                 ; faz a entrada de um caractere apenas para sair da tela inicial
+    INT 21H                     ;  caractere nao ficara salvo e nao tera nenhuma utilidade apos
 
     RET
 PRIMEIRA_PAGINA ENDP
@@ -381,50 +385,51 @@ DIVISAO_COM_ZERO ENDP
 ; soma
 CALCULAR_SOMA PROC
     MOV DL, NUM1        
-    ADD DL, NUM2        ; FAZ A SOMA DOS NUMERO E ARMAZENA EM "RESULTADO"
+    ADD DL, NUM2        ; faz a soma dos numeros e armazena na variavel RESULTADO
     MOV RESULTADO, DL
 
-    LEA DX, MSG3        ; PRINT O MSG3 NA TELA
+    LEA DX, MSG3        ; print MSG3 na tela
     CALL IMPRIMIR_MSG
 
-    RET
+    RET                 ; retorna o resultado da soma salva na variavel RESULTADO e imprime na tela MSG3
 CALCULAR_SOMA ENDP
 
 ; subtracao
 TESTE_POSITIVO_NEGATIVO PROC
-    MOV AL, NUM1        ;NO CASO DA SUBTRACAO, CASO SEGUNDO VALOR MAIOR QUE O PRIMEIRO, RESULTADO SERA NEGATIVO
-    MOV BL, NUM2        ; PARA ISSO COMPARAMOS NUM1 E NUM2, CASO POSITIVO IGNORA O PULO PARA "RESULTADO_NEGATIVO"
-    CMP AL, BL          ; E RESOLVE A CONTA NUM1-NUM2, CASO CONTRARIO, PULA PARA "RESULTADO_NEGATIVO" E FAZ NUM2-NUM1
-                        ; E ADICIONA O SINAL DE NEGATIVO ANTES DA RESPOSTA FINAL
-    RET
+    MOV AL, NUM1        ;no caso da subtracao, caso segundo valor maior que o primeiro, resultado sera negativo
+    MOV BL, NUM2        ; para isso comparamos num1 e num2, caso positivo ignora o pulo para "resultado_negativo"
+    CMP AL, BL          ; e resolve a conta num1-num2, caso contrario, pula para "resultado_negativo" e faz num2-num1
+                        ; e adiciona o sinal de negativo antes da resposta final
+
+    RET                 ; retorna a funcao com a comparacao de AL com BL para fazer o jump condicional em seguida
 TESTE_POSITIVO_NEGATIVO ENDP
 
 SUBTRACAO_RESULTADO_POSITIVO PROC
     MOV DL, NUM1        
-    SUB DL, NUM2        ; FAZ A SUBTRACAO DOS NUMERO E ARMAZENA EM "RESULTADO"
+    SUB DL, NUM2        ; faz a subtracao dos numero e armazena em "resultado"
     MOV RESULTADO, DL
 
     LEA DX, MSG3
-    MOV AH, 09H         ; PRINT O MSG3 NA TELA
+    MOV AH, 09H         ; print o MSG3 print na tela
     INT 21H
 
-    RET
+    RET                 ; retorna a funcao com o resultado da subtracao de resultado positivo salvo na variavel RESULTADO
 SUBTRACAO_RESULTADO_POSITIVO ENDP
 
 SUBTRACAO_RESULTADO_NEGATIVO PROC
     MOV DL, NUM2
-    SUB DL, NUM1
+    SUB DL, NUM1            ; faz a subtracao invertendo a ordem para deixar o maior valor
+                            ;  primeiro e armazena na variavel RESULTADO
     MOV RESULTADO, DL
 
-    LEA DX, MSG3
-    MOV AH, 09H         ; PRINT O MSG3 NA TELA
-    INT 21H
+    LEA DX, MSG3            ; print MSG3 na tela
+    CALL IMPRIMIR_MSG
 
-    LEA DX, SINAL_NEGATIVO
-    MOV AH, 09H
-    INT 21H
+    LEA DX, SINAL_NEGATIVO  ; print na tela o sinal de negativo
+    CALL IMPRIMIR_MSG
 
-    RET
+    RET                     ; retorna a funcao com o resultado da subtracao invertida na 
+                            ;  variavel RESULTADO com o sinal de negativo antes de exibir a resposta
 SUBTRACAO_RESULTADO_NEGATIVO ENDP
 
 ; multiplicacao
@@ -495,7 +500,7 @@ CALCULAR_DIVISAO ENDP
 ENCERRA_PROGRAMA PROC
     CALL COR_DE_FUNDO
 
-    LEA DX, PULA_LINHA  ; pula uma linha
+    LEA DX, PULA_LINHA  ; imprime as MSG's
     CALL IMPRIMIR_MSG
 
     LEA DX, MSG15
@@ -510,13 +515,14 @@ ENCERRA_PROGRAMA PROC
     MOV CX,11           ; inicializa cx com 11
 VOLTA1:
     LEA DX, PULA_LINHA
-    CALL IMPRIMIR_MSG   ; realiza um loop para imprimir linha 10 vezes
+    CALL IMPRIMIR_MSG   ; realiza um loop para pular linha 10 vezes
     LOOP VOLTA1
 
 
     MOV AH, 4CH         ; ENCERRA O PROGRAMA!
     INT 21H
-    RET
+
+    RET                 ; retorna a funcao com o programa encerrado
 ENCERRA_PROGRAMA ENDP
 
 ; automatizacao do processo para imprimir as menssagens
@@ -551,7 +557,7 @@ QUER_CONTINUAR PROC
     MOV BH, 1               ; compara com um, caso seja reinicia o programa, caso 
     CMP AL, BH              ;  seja qualquer outro caractere reinicia o programa
 
-    RET
+    RET                     ; retorna para a funcao a comparacao de AL e BL para fazer o salto condicional
 QUER_CONTINUAR ENDP
 
 END MAIN
