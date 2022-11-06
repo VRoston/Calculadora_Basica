@@ -298,77 +298,77 @@ INPUT ENDP
 
 ; conversao do resultado em 2 numeros de 2 bits e imprime na tela
 OUTPUT PROC
-    XOR AX, AX          ; ZERA O CONTEÚDO DE AX
-    MOV AL, RESULTADO   ; PASSA O RESULTADO PRA AL
-    MOV BL, 10          ; ATRIBUI 10 PRA BL
-    DIV BL              ; DIVIDI O AL POR 10 - (AL)/10 - AGORA O RESULTADO DA DIVISÃO ESTÁ EM AL
-                        ;  E O RESTO DA DIVISÃO ESTÁ EM AH
-    MOV BX,AX           ; PASSA ESSE RESULTADOS PARA BX
+    XOR AX, AX          ; zera conteudo de AX
+    MOV AL, RESULTADO   ; passa o resultado para AL
+    MOV BL, 10          ; atribui 10 para BL                        
+    DIV BL              ; divide o AL por 10 - (AL)/10 - agora o resultado da divisao esta em AL        
+                        ;  e o resto da divisao esta em AH          
+    MOV BX,AX           ; passa esse resultado para BX              
 
     MOV DL, BL          
-    ADD DL, 30H         ; IMPRIME O QUE ESTÁVA EM AL ANTERIORMENTE 
+    ADD DL, 30H         ; imprime o que estava em AL na casa da dezena   
     MOV AH, 02H
     INT 21H
     
     MOV DL, BH
-    ADD DL, 30H         ; IMPRIME O QUE ESTÁVA EM AH ANTERIORMENTE 
+    ADD DL, 30H         ; imprime o que estava em AH na casa da unidade  
     MOV AH, 02H
     INT 21H
 
-    RET                 ; RETORNA DA FUNÇÃO
+    RET                 ; retorna a funcao com o resultado da operacao impresso na tela usando saida de 2 bits
 OUTPUT ENDP
 
-; imprime o quociente da divisao
+; imprime o resto da divisao
+OUTPUT_RESTO PROC
+    ; realiza a mesma funcao do primeiro output, porem com a menssagem de resto antes de exibir a resposta e imprimira a variavel RESULTADO2
+    LEA DX, MSG21
+    CALL IMPRIMIR_MSG
+
+    XOR AX, AX          ; zera conteudo de AX                       
+    MOV AL, RESULTADO2  ; passa o resultado para AL                 
+    MOV BL, 10          ; atribui 10 para BL                        
+    DIV BL              ; divide o AL por 10 - (AL)/10 - agora o resultado da divisao esta em AL        
+                        ;  e o resto da divisao esta em AH          
+    MOV BX,AX           ; passa esse resultado para BX              
+
+    MOV DL, BL          
+    ADD DL, 30H         ; imprime o que estava em AL na casa da dezena   
+    MOV AH, 02H
+    INT 21H
+    
+    MOV DL, BH
+    ADD DL, 30H         ; imprime o que estava em AH na casa da unidade  
+    MOV AH, 02H
+    INT 21H
+
+    RET                 ; retorna a funcao com o resultado da operacao impresso na tela usando saida de 2 bits
+OUTPUT_RESTO ENDP
+
+; imprimir o quociente da divisao
 OUTPUT_QUOCIENTE PROC
     ; realiza a mesma funcao do primeiro output, porem com a menssagem de quociente antes de exibir a resposta
     LEA DX, MSG20
     CALL IMPRIMIR_MSG
 
-    XOR AX, AX          ; ZERA O CONTEÚDO DE AX
-    MOV AL, RESULTADO   ; PASSA O RESULTADO PRA AL
-    MOV BL, 10          ; ATRIBUI 10 PRA BL
-    DIV BL              ; DIVIDI O AL POR 10 - (AL)/10 - AGORA O RESULTADO DA DIVISÃO ESTÁ EM AL
-                        ;  E O RESTO DA DIVISÃO ESTÁ EM AH
-    MOV BX,AX           ; PASSA ESSE RESULTADOS PARA BX
+    XOR AX, AX          ; zera conteudo de AX
+    MOV AL, RESULTADO   ; passa o resultado para AL
+    MOV BL, 10          ; atribui 10 para BL                        
+    DIV BL              ; divide o AL por 10 - (AL)/10 - agora o resultado da divisao esta em AL        
+                        ;  e o resto da divisao esta em AH          
+    MOV BX,AX           ; passa esse resultado para BX              
 
     MOV DL, BL          
-    ADD DL, 30H         ; IMPRIME O QUE ESTÁVA EM AL ANTERIORMENTE 
+    ADD DL, 30H         ; imprime o que estava em AL na casa da dezena   
     MOV AH, 02H
     INT 21H
     
     MOV DL, BH
-    ADD DL, 30H         ; IMPRIME O QUE ESTÁVA EM AH ANTERIORMENTE 
+    ADD DL, 30H         ; imprime o que estava em AH na casa da unidade  
     MOV AH, 02H
     INT 21H
 
-    RET                 ; RETORNA DA FUNÇÃO
+    RET                 ; retorna a funcao com o resultado da operacao impresso na tela usando saida de 2 bits
 OUTPUT_QUOCIENTE ENDP
-
-; imprimir o resto da divisao
-OUTPUT_RESTO PROC
-    ; realiza a mesma funcao do primeiro output, porem com a menssagem de resto antes de exibir a resposta
-    LEA DX, MSG21
-    CALL IMPRIMIR_MSG
-
-    XOR AX, AX          ; ZERA O CONTEÚDO DE AX
-    MOV AL, RESULTADO2   ; PASSA O RESULTADO2 PRA AL
-    MOV BL, 10          ; ATRIBUI 10 PRA BL
-    DIV BL              ; DIVIDI O AL POR 10 - (AL)/10 - AGORA O RESULTADO DA DIVISÃO ESTÁ EM AL
-                        ;  E O RESTO DA DIVISÃO ESTÁ EM AH
-    MOV BX,AX           ; PASSA ESSE RESULTADOS PARA BX
-
-    MOV DL, BL          
-    ADD DL, 30H         ; IMPRIME O QUE ESTÁVA EM AL ANTERIORMENTE 
-    MOV AH, 02H
-    INT 21H
-    
-    MOV DL, BH
-    ADD DL, 30H         ; IMPRIME O QUE ESTÁVA EM AH ANTERIORMENTE 
-    MOV AH, 02H
-    INT 21H
-
-    RET
-OUTPUT_RESTO ENDP
 
 ; caso o segundo numero da entrada seja 0, impossivel realizar divisao por zero
 DIVISAO_COM_ZERO PROC
@@ -438,52 +438,57 @@ CALCULAR_MULTIPLICACAO PROC
                         ;  a soma do num1 no resultado e caso 1 adiciona o num1 ao resultado
 
   VOLTA:
-    SHR BH,1            ; MOVIMENTA NUM2 P/ CF (CASO 1 ADICIONA BL AO RESULTADO E DESLOCA O NUM1 
-    JNC PULA            ;  PARA ESQUERDA PARA A PROXIMA SOMA, CASO 0 APENAS DESLOCA NUM1 PARA ESQUERDA)
+    SHR BH,1            ; movimenta NUM2 p/ CF (caso 1 adciona BL ao resultado e desloca o num1
+    JNC PULA            ;  para esquerda para a proxima soma, caso 0 apenas desloca NUM1 p/ esquerda
     ADD DL,BL
 
   PULA:
-    SHL BL,1            ; PARA A PROXIMA SOMA E PRECISO PULAR UMA CASA A ESQUERDA
+    SHL BL,1            ; para a proxima soma e preciso deslocar uma casa a esquerda pois o numero a ser somado
+                        ;  tem a adicao de um 0 a sua esquerda exemplo(antes= BL-0001b / depois= BL-0010b) 
     LOOP VOLTA
 
-    MOV RESULTADO,DL    ; PASSA O VALOR FINA DA MULTIPLICACAO PARA A VARIAVEL RESULTADO
+    MOV RESULTADO,DL    ; passa o resultado final para a variavel RESULTADO
 
     LEA DX, MSG3        ; print msg3 na tela
     CALL IMPRIMIR_MSG
 
-    RET
+    RET                 ; retorna a funcao com a multiplicacao feita e com o resultado salvo na variavel
 CALCULAR_MULTIPLICACAO ENDP
 
 ; divisao
 CALCULAR_DIVISAO PROC
-    XOR AX, AX          ; zera os registradores
+    XOR AX, AX              ; zera os registradores
     XOR BX, BX
     XOR CX, CX
     XOR DX, DX
 
-    MOV AH, NUM2        ; passa para o registrador o conteudo da variavel num2
-    MOV CL, 4           ; havera um loop de 4 vezes que usa cx como contador pois
-                        ;  a divisao tera no maximo 4 digitos de bits
+    MOV AH, NUM2            ; passa para o registrador o conteudo da variavel num2
+    MOV CL, 4               ; havera um loop de 4 vezes que usa cx como contador pois
+                            ;  a divisao tera no maximo 4 digitos de bits
 
 VOLTA3:
-    MOV AL, NUM1        ; o registrador AL recebe num1 como base para fazer para subtrair
-    SHR AL, CL
-    RCL DL, 1
-    CMP AH, DL
-    JG PULA5
-    SUB DL, AH
-    INC DH
+    MOV AL, NUM1            ; o registrador AL (dividendo) recebe num1 toda vez que houver o loop para 
+                            ;  fazer um deslocamento a direita com a quantidade que esta em CL 
+                            ;  (cada vez que o loop acontece ha um decremento)
+    SHR AL, CL              ; move para a carry flag os valores de NUM1 mais a esquerda, decrementando cada loop
+                            ;  exemplo AL=9 CX=4(antes= CL - 04  AL - 1001b  CF - 0 / depois= CL - 04  AL - 0000b  CF - 1)
+    RCL DL, 1               ; move o valor salvo do CF para DL exemplo(antes= DL - 0001b  CF - 1 / depois DL - 0011b  CF - 0
+    CMP AH, DL              ; compara AH (NUM2) com DL (resto), caso o resto seja menor, pula, pois não tem como subtrair o resto, e nao incrementa o quociente
+    JG PULA5                ; caso NUM2 for maior que o resto, nao cabe para subtrair o resto, ent pula
+    SUB DL, AH              ; caso NUM2 menor que o resto, quer dizer que ele cabe uma vez no resto, ent subtrai o divisor pelo resto
+    INC DH                  ; como o divisor cabe no resto, incrementa 1 no quociente
 PULA5:
-    CMP CL, 1
-    JE PULA6
-    SHL DH, 1
+    CMP CL, 1               ; quando CL for 1, nao pode mover DH para a esquerda pois ja terminou a divisao
+    JE PULA6                ; pula para o fim (uma vez que CL = 1, nao fara o loop)
+    SHL DH, 1               ; caso CL nao seja 1, entao a divisao continua, e o quociente desloca os binarios a esquerda 
+                            ; exemplo(antes=0001/depois=0010) para que o proximo quociente seja adicionado a direita
 PULA6:
-    LOOP VOLTA3
+    LOOP VOLTA3             ; repete todo o processo 4 vezes, pois a maior entrada é 9 (1001b) com 4 binarios
 
-    MOV RESULTADO, DH       ; RESTO
-    MOV RESULTADO2, DL      ; QUOCIENTE
+    MOV RESULTADO, DH       ; resto
+    MOV RESULTADO2, DL      ; quociente
 
-    RET
+    RET                     ; retorna a funcao com o quociente e o resto armazenados nas variaveis
 CALCULAR_DIVISAO ENDP
 
 ; fim de programa
