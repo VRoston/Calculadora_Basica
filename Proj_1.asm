@@ -27,6 +27,10 @@ TITLE NOME:VICTOR DE MELO ROSTON | RA:22006737
     MSG21 db  10, 13, ' RESTO: ','$'
     MSG22 db  10, 13, ' IMPOSSIVEL DIVIDIR POR 0','$'
     MSG23 db  10, 13, '   ===PROGRAMA FEITO POR VICTOR DE MELO ROSTON===','$'
+    MSG24 db          '  ADICAO','$'
+    MSG25 db          '  SUBTRACAO','$'
+    MSG26 db          '  MULTIPLICACAO','$'
+    MSG27 db          '  DIVISAO','$'
     PULA_LINHA db 10, 13, '$'
     SINAL_NEGATIVO db '-', '$'
     
@@ -81,17 +85,24 @@ CARACTER_INVALIDO:
     CALL IMPRIMIR_MSG
 
     JMP CARACTER_INVALIDO           ; caso chegue nessa parte ele volta pois o caractere inserido nao é valido
-
-    REINICIA_PROGRAMA2:             ; devido a uma resticao de tamanho, o umtimo jmp nao alcanca o REINICIA_PROGRAMA, 
-        JMP REINICIA_PROGRAMA       ;  entao foi feito uma ponte para reiniciar o programa
 ; fim da escolha de operacao
 
+; inicio ponte de jumps
+    REINICIA_PROGRAMA2:             ; devido a uma resticao de tamanho, o umtimo jmp nao alcanca o REINICIA_PROGRAMA, 
+        JMP REINICIA_PROGRAMA       ;  entao foi feito uma ponte para reiniciar o programa
+
+    FIM:                            ; ponte para o jump FIM devido a restricao de tamanho do jump
+        JMP FIM2
+; fim pontes de jumps
 
 ; inicio das operacoes
 
 ; inicio da soma
 ADICAO:
     CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
+
+    LEA DX, MSG24                       ; imprime "ADICAO" como titulo da nova tela
+    CALL IMPRIMIR_MSG
 
     CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
@@ -104,6 +115,9 @@ ADICAO:
 ; inicio da subtracao
 SUBTRACAO:
     CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
+
+    LEA DX, MSG25                       ; imprime "SUBTRACAO" como titulo da nova tela
+    CALL IMPRIMIR_MSG
 
     CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
@@ -127,6 +141,9 @@ SUBTRACAO:
 MULTIPLICACAO:
     CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
 
+    LEA DX, MSG26                       ; imprime "MULTIPLICACAO" como titulo da nova tela
+    CALL IMPRIMIR_MSG
+
     CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
     CALL CALCULAR_MULTIPLICACAO         ; chama a funcao que ira calcular a multiplicacao em binario usando rotacao e soma
@@ -138,6 +155,9 @@ MULTIPLICACAO:
 ; inicio da divisao
 DIVISAO:
     CALL COR_DE_FUNDO                   ; chama a funcao para limpar tela e mudar de cor
+
+    LEA DX, MSG27                       ; imprime "DIVISAO" como titulo da nova tela
+    CALL IMPRIMIR_MSG
 
     CALL INPUT                          ; chama a funcao para entrada de 2 numeros de 0 a 9
 
@@ -151,7 +171,7 @@ DIVISAO:
     CALL OUTPUT_RESTO                   ; chama a funcao que vai imprimir o resultado do resto na tela
 
     CALL QUER_CONTINUAR                 ; caso queria realizar outra conta o programa pula para o inicio,
-        JE REINICIA_PROGRAMA            ;  caso nao, o programa pula para o fim
+        JE REINICIA_PROGRAMA2           ;  caso nao, o programa pula para o fim
     
     JMP FIM
 
@@ -172,11 +192,12 @@ TERMINA_OPERACAO:
     CALL QUER_CONTINUAR                 ; caso queria realizar outra conta o programa pula para o inicio, 
         JE REINICIA_PROGRAMA2           ;  caso nao, o programa pula para o fim
 
- FIM:
+ FIM2:
     CALL ENCERRA_PROGRAMA               ; limpa a tela, muda a cor de fundo, imprime a menssagem de despedida e fecha o programa
 ; fim do termino do programa
 
 MAIN ENDP
+
 
 ; apaga o conteudo impresso na tela e muda a cor de fundo
 COR_DE_FUNDO PROC
