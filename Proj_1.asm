@@ -214,7 +214,7 @@ COR_DE_FUNDO PROC
     MOV CX,800H     ; numero de vezes a escrever o caractere
     INT 10H         ; executa a entrada de video
 
-    RET
+    RET             ; retorna a funcao com a exibicao de video limpa e com a cor de fundo laranja
 COR_DE_FUNDO ENDP
 
 ; definindo a primeira tela que apresenta o titulo da calculadora piscando
@@ -232,7 +232,7 @@ PRIMEIRA_PAGINA PROC
     MOV CX,800H                 ; numero de vezes a escrever o caractere
     INT 10H                     ; executa a entrada de video
 
-    LEA DX, MSG19               ; imprime MGS's na tela
+    LEA DX, MSG19               ; imprime "CALCULADORA BASICA"
     CALL IMPRIMIR_MSG
 
     XOR CX, CX
@@ -242,68 +242,69 @@ PRIMEIRA_PAGINA PROC
     CALL IMPRIMIR_MSG
     LOOP PL
 
-    LEA DX, MSG12               
+    LEA DX, MSG12               ; imprime "[APERTE QUALQUER TECLA]"
     CALL IMPRIMIR_MSG           
 
     MOV AH, 01H                 ; faz a entrada de um caractere apenas para sair da tela inicial
     INT 21H                     ;  caractere nao ficara salvo e nao tera nenhuma utilidade apos
 
-    RET
+    RET                         ; retorna a funcao com primeira tela do programa mostrando o titulo 
+                                ;  do projeto com as letras piscando
 PRIMEIRA_PAGINA ENDP
 
 ; imprime na tela um sumario das operacoes que podem ser selecionadas
 SUMARIO PROC
-    LEA DX, MSG5        ; a cada bloco sera feita a impressao de uma das menssagens escritas no .DATA
+    LEA DX, MSG5                ;imprime "ESCOLHA A OPERACAO A SER REALIZADA:"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG6        
+    LEA DX, MSG6                ;imprime "1-SOMA"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG7        
+    LEA DX, MSG7                ;imprime "2-SUBTRACAO"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG8        
+    LEA DX, MSG8                ;imprime "3-MULTIPLICACAO"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG9        
+    LEA DX, MSG9                ;imprime "4-DIVISAO"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG14       
+    LEA DX, MSG14               ;imprime "9-FINALIZAR PROGRAMA"
     CALL IMPRIMIR_MSG
 
-    LEA DX, PULA_LINHA  
+    LEA DX, PULA_LINHA          ;passa para a proxima linha
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG13       
+    LEA DX, MSG13               ;imprime "[DIGITE DE 1 A 4 PARA ESCOLHER, OU 9 PARA FECHAR]"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG10       
+    LEA DX, MSG10               ;imprime " >>>"
     CALL IMPRIMIR_MSG
 
-    RET
+    RET                         ; retorna a funcao com as opcoes de conta, ou encerramento do programa impressas na tela
 SUMARIO ENDP
 
 ; entrada dos numeros para a operacao
 INPUT PROC
  NUMERO_INVALIDO:
-    LEA DX, MSG1        ; imprime MSG1 na tela
+    LEA DX, MSG1            ; imprime "Digite o 1o numero: "
     CALL IMPRIMIR_MSG
 
     MOV AH,01H
-    INT 21H             ; faz a entrada do primeiro número da operação
+    INT 21H                 ; faz a entrada do primeiro número da operação
     
-    CMP AL, 57          ; como a entrada pode ser qualquer caractere e o programa trabalha
-    JG NUMERO_INVALIDO  ;  com entrada de apenas um digito de numero (0 a 9), esse breve sistema 
-                        ;  limitara a entrada de caracteres entre 48 (0 na tabela ASCII) a 57 (9 na tabela ASCII),
-    CMP AL, 48          ;  fazendo um loop quando a entrada nao for entre 0 a 9
+    CMP AL, 57              ; como a entrada pode ser qualquer caractere e o programa trabalha
+    JG NUMERO_INVALIDO      ;  com entrada de apenas um digito de numero (0 a 9), esse breve sistema 
+                            ;  limitara a entrada de caracteres entre 48 (0 na tabela ASCII) a 57 (9 na tabela ASCII),
+    CMP AL, 48              ;  fazendo um loop quando a entrada nao for entre 0 a 9
     JL NUMERO_INVALIDO
     
-    SUB AL,30H          ; passa o caractere para numero
-    MOV NUM1, AL        ; armazena o primeiro numero na variavel NUM1
+    SUB AL,30H              ; passa o caractere para numero
+    MOV NUM1, AL            ; armazena o primeiro numero na variavel NUM1
 
 ; mesmos procedimentos, mas para a entrada do segundo numero para a operacao
  NUMERO_INVALIDO2:
-    LEA DX, MSG2
+    LEA DX, MSG2            ; imprime "Digite o 2o numero: "
     CALL IMPRIMIR_MSG
 
     MOV AH,01H
@@ -318,11 +319,12 @@ INPUT PROC
     SUB AL,30H
     MOV NUM2, AL
 
-    RET                 ; o retorno a funcao se dara com a entrada dos dois numeros armazenados em NUM1 e NUM2
+    RET                     ; o retorno a funcao se dara com a entrada dos dois numeros armazenados nas variaveis NUM1 e NUM2
 INPUT ENDP
 
 ; conversao do resultado em 2 numeros de 2 bits e imprime na tela
 OUTPUT PROC
+ ; o ultimo passo da conta, impressao do resultado na tela, que esta armazenado na variavel RESULTADO
     XOR AX, AX          ; zera conteudo de AX
     MOV AL, RESULTADO   ; passa o resultado para AL
     MOV BL, 10          ; atribui 10 para BL                        
@@ -345,8 +347,8 @@ OUTPUT ENDP
 
 ; imprime o resto da divisao
 OUTPUT_RESTO PROC
-    ; realiza a mesma funcao do primeiro output, porem com a menssagem de resto antes de exibir a resposta e imprimira a variavel RESULTADO2
-    LEA DX, MSG21
+ ; realiza a mesma funcao do primeiro output, porem com a menssagem de resto antes de exibir a resposta e imprimira a variavel RESULTADO2
+    LEA DX, MSG21       ; imprime "RESTO: "
     CALL IMPRIMIR_MSG
 
     XOR AX, AX          ; zera conteudo de AX                       
@@ -371,8 +373,8 @@ OUTPUT_RESTO ENDP
 
 ; imprimir o quociente da divisao
 OUTPUT_QUOCIENTE PROC
-    ; realiza a mesma funcao do primeiro output, porem com a menssagem de quociente antes de exibir a resposta
-    LEA DX, MSG20
+ ; realiza a mesma funcao do primeiro output, porem com a menssagem de quociente antes de exibir a resposta
+    LEA DX, MSG20       ; imprime "QUOCIENTE: "
     CALL IMPRIMIR_MSG
 
     XOR AX, AX          ; zera conteudo de AX
@@ -400,16 +402,18 @@ DIVISAO_COM_ZERO PROC
     MOV AH, NUM2            ; conteudo de NUM2 sera passado para o registrador
     CMP AH, 0               ;  para fazer comparacao com zero
 
-    RET                     ; a função retornara com a comparação do segundo numero da entrada
+    RET                     ; a função retornara com a comparação do segundo numero da entrada com zero
 DIVISAO_COM_ZERO ENDP
 
 ; soma
 CALCULAR_SOMA PROC
+ ; funcao que ira calcular a soma em binario, usando valores salvo em NUM1 e NUM2
+ ; exemplo: 9d(1001b)+8d(1000b)=17d(10001b)
     MOV DL, NUM1        
     ADD DL, NUM2        ; faz a soma dos numeros e armazena na variavel RESULTADO
     MOV RESULTADO, DL
 
-    LEA DX, MSG3        ; print MSG3 na tela
+    LEA DX, MSG3        ; imprime "RESULTADO: "
     CALL IMPRIMIR_MSG
 
     RET                 ; retorna o resultado da soma salva na variavel RESULTADO e imprime na tela MSG3
@@ -417,6 +421,8 @@ CALCULAR_SOMA ENDP
 
 ; subtracao
 TESTE_POSITIVO_NEGATIVO PROC
+ ; antes da subtracao e necessario saber se o segundo numero armazenado em NUM2 e maior 
+ ;  que NUM1, pois caso afirmativo, resposta sera positivo
     MOV AL, NUM1        ;no caso da subtracao, caso segundo valor maior que o primeiro, resultado sera negativo
     MOV BL, NUM2        ; para isso comparamos num1 e num2, caso positivo ignora o pulo para "resultado_negativo"
     CMP AL, BL          ; e resolve a conta num1-num2, caso contrario, pula para "resultado_negativo" e faz num2-num1
@@ -426,27 +432,31 @@ TESTE_POSITIVO_NEGATIVO PROC
 TESTE_POSITIVO_NEGATIVO ENDP
 
 SUBTRACAO_RESULTADO_POSITIVO PROC
+ ; funcao que ira calcular a subtracao em binario, usando valores salvo em NUM1 e NUM2 nessa ordem
+ ; exemplo: 9d(1001b)-8d(1000b)=1d(0001b)
     MOV DL, NUM1        
     SUB DL, NUM2        ; faz a subtracao dos numero e armazena em "resultado"
     MOV RESULTADO, DL
 
     LEA DX, MSG3
-    MOV AH, 09H         ; print o MSG3 print na tela
+    MOV AH, 09H         ; imprime "RESULTADO: "
     INT 21H
 
     RET                 ; retorna a funcao com o resultado da subtracao de resultado positivo salvo na variavel RESULTADO
 SUBTRACAO_RESULTADO_POSITIVO ENDP
 
 SUBTRACAO_RESULTADO_NEGATIVO PROC
+ ; funcao que ira calcular a subtracao em binario, usando valores salvo em NUM1 e NUM2, porem subtraindo NUM1 de NUM2
+ ; exemplo: 8d-9d=-1d  ==  9d(1001b)-8d(1000b)=-1d(0001b) (sinal de menos adicionado manualmente)
     MOV DL, NUM2
     SUB DL, NUM1            ; faz a subtracao invertendo a ordem para deixar o maior valor
                             ;  primeiro e armazena na variavel RESULTADO
     MOV RESULTADO, DL
 
-    LEA DX, MSG3            ; print MSG3 na tela
+    LEA DX, MSG3            ; imprime "RESULTADO: "
     CALL IMPRIMIR_MSG
 
-    LEA DX, SINAL_NEGATIVO  ; print na tela o sinal de negativo
+    LEA DX, SINAL_NEGATIVO  ; imprime "-"
     CALL IMPRIMIR_MSG
 
     RET                     ; retorna a funcao com o resultado da subtracao invertida na 
@@ -455,6 +465,20 @@ SUBTRACAO_RESULTADO_NEGATIVO ENDP
 
 ; multiplicacao
 CALCULAR_MULTIPLICACAO PROC
+ ; procedimento para calcular a multiplicacao em binário, e armazenar o resultado na variavel RESULTADO
+ ; exemplo: 3d(11b)*2d(10b)=6d(110b)
+ ; BL = 11b
+ ; *
+ ; BH = 10b -> CF=0 recebe o numero mais a direita, como 0, nao adiciona o primeiro valor ao resultado em DL,
+ ;                                            e rotaciona o primeiro valor a esquerda adicionando 
+ ;                                            um zero a sua direita, BL antes 11b / BL depois 110b, 
+ ;                                            BH antes = 10b / BH depois = 1b
+ ; resultado da primeira operacao = 00
+ ; seunda repeticao
+ ; BH = 1b -> CF=1       como o CF agora tem 1, BL vai ser somado em DL(resultado), fincando DL antes = 0b/ depois = 110b
+ ; esse processo se repete 4 vezes, mas como BH ficou 0b depois da segunda conta, ambas repeticoes nao influenciaram no resultado final
+ ; a resposta em DL sera movida para a variavel RESPOSTA
+
     XOR DX, DX          ; inicializa dx com 0
     MOV CX, 4           ; inicializa cx com 4 para reptir o loop 4 vezes
 
@@ -475,7 +499,7 @@ CALCULAR_MULTIPLICACAO PROC
 
     MOV RESULTADO,DL    ; passa o resultado final para a variavel RESULTADO
 
-    LEA DX, MSG3        ; print msg3 na tela
+    LEA DX, MSG3        ; imprime "RESULTADO: "
     CALL IMPRIMIR_MSG
 
     RET                 ; retorna a funcao com a multiplicacao feita e com o resultado salvo na variavel
@@ -519,18 +543,18 @@ CALCULAR_DIVISAO ENDP
 
 ; fim de programa
 ENCERRA_PROGRAMA PROC
-    CALL COR_DE_FUNDO
+    CALL COR_DE_FUNDO   ; limpa a tela e muda a cor de fundo
 
-    LEA DX, PULA_LINHA  ; imprime as MSG's
+    LEA DX, PULA_LINHA  ; passa para a linha de baixo
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG15
+    LEA DX, MSG15       ; imprime "///O PROGRAMA FOI ENCERRADO, OBRIGADO POR USAR\\\"
     CALL IMPRIMIR_MSG
 
     LEA DX, PULA_LINHA
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG23
+    LEA DX, MSG23       ; imprime "===PROGRAMA FEITO POR VICTOR DE MELO ROSTON==="
     CALL IMPRIMIR_MSG
 
     MOV CX,11           ; inicializa cx com 11
@@ -559,16 +583,16 @@ QUER_CONTINUAR PROC
     LEA DX, PULA_LINHA      ; passa para a linha de baixo
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG16           ; imprime as menssagens(MSG's)
+    LEA DX, MSG16           ; imprime "GOSTARIA DE CONTINUAR?"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG17
+    LEA DX, MSG17           ; imprime "SIM - APERTE 1"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG18
+    LEA DX, MSG18           ; imprime "NAO - APERTE QUALQUER TECLA"
     CALL IMPRIMIR_MSG
 
-    LEA DX, MSG10
+    LEA DX, MSG10           ; imprime " >>>"
     CALL IMPRIMIR_MSG
 
     MOV AH, 01              ; entrada de caractere pelo teclado
