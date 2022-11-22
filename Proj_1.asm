@@ -535,8 +535,8 @@ PULA5:
 PULA6:
     LOOP VOLTA3             ; repete todo o processo 4 vezes, pois a maior entrada é 9 (1001b) com 4 binarios
 
-    MOV RESULTADO, DH       ; resto
-    MOV RESULTADO2, DL      ; quociente
+    MOV RESULTADO, DH       ; quociente
+    MOV RESULTADO2, DL      ; resto
 
     RET                     ; retorna a funcao com o quociente e o resto armazenados nas variaveis
 CALCULAR_DIVISAO ENDP
